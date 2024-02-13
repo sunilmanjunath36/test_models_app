@@ -51,7 +51,7 @@ class _ConstructionPredictionScreenState
 
     var url = 'https://testflaskfunc.azurewebsites.net/classify'; // Replace with your Flask API URL
 
-
+    try {
       var data = {'image': base64Image}; // Send the base64 encoded image data
       final response = await http.post(
         Uri.parse(url),
@@ -59,7 +59,7 @@ class _ConstructionPredictionScreenState
         body: jsonEncode(data),
       );
 
-
+      if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
 
 
@@ -74,8 +74,16 @@ class _ConstructionPredictionScreenState
         setState(() {
           _prediction = prediction;
         });
-
-
+      } else {
+        if (kDebugMode) {
+          print('Error: ${response.statusCode}');
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error:$e');
+      }
+    }
   }
 
 
